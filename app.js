@@ -9,6 +9,11 @@ const port = process.env.PORT || 3002;
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+//connect mongoose database
+mongoose.connect('mongodb://localhost/vidjot-dev',{
+	useMongoClient:true
+}).then(()=> console.log('MongoDB Connceted'))
+  .catch(err=>console.log(err));
 
 //middleware
 app.use(function(req,res,next){
