@@ -9,10 +9,15 @@ const port = process.env.PORT || 3002;
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-//connect mongoose database
-mongoose.connect('mongodb://localhost/vidjot-dev',{
-	useMongoClient:true
-}).then(()=> console.log('MongoDB Connceted'))
+//Map global promise ;so avoid mongo warning
+mongoose.Promise = global.Promise;
+
+//connect mongoose database (local)
+// mongoose.connect('mongodb://localhost/vidjot-dev').then(()=> console.log('MongoDB Connceted'))
+//   .catch(err=>console.log(err));
+
+//connect mongoose database (live)
+mongoose.connect('mongodb://FaizanQureshi:v15ce4q1@ds163182.mlab.com:63182/vidjot-dev').then(()=> console.log('MongoDB Connceted'))
   .catch(err=>console.log(err));
 
 //middleware
