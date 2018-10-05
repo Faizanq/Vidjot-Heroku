@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 const exphbs  = require('express-handlebars');
+const methodOverride = require('method-override')
 const mongoose = require('mongoose');
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const port = process.env.PORT || 3002;
 
 //our engine layout
@@ -38,6 +39,9 @@ const Idea = mongoose.model('ideas');
 // 	next();
 // });
 
+//Method overridemiddleware
+app.use(methodOverride('_method'));
+
 //Index route
 app.get('/',function(req,res){
 	res.render('home');
@@ -62,6 +66,37 @@ app.get('/ideas',function(req,res){
 				ideas:ideas
 			});
 		});
+});
+
+//Get specific Idea form collection
+app.get('/ideas/edit/:id',function(req,res){
+
+	Idea.findOne({
+			_id:req.params.id
+		})
+		.then((idea)=>{
+			console.log(idea);
+			res.render('ideas/edit',{
+				idea:idea
+			});
+		});
+});
+
+//Update idea
+app.put('/ideas/:id',function(req,res){
+
+	Idea.findOne({
+		_id:req.params.id
+	})
+	.then(idea=>{
+		idea.title = req.body.title;
+		idea.details = req.body.details;
+		idea.save()
+		.then(()=>{
+			res.redirect('/ideas');
+			});
+	});
+	
 });
 
 //Process Ideas Form
