@@ -99,6 +99,17 @@ app.put('/ideas/:id',function(req,res){
 	
 });
 
+
+//Delete idea
+app.delete('/ideas/:id',function(req,res){
+	Idea.remove({
+		_id:req.params.id
+	})
+	.then(()=>{
+			res.redirect('/ideas');
+	});
+});
+
 //Process Ideas Form
 app.post('/ideas',(req,res)=>{
 
