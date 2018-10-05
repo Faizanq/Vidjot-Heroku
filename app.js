@@ -33,10 +33,10 @@ require('./models/Idea');
 const Idea = mongoose.model('ideas');
 
 //middleware
-app.use(function(req,res,next){
-	console.log(Date.now());
-	next();
-});
+// app.use(function(req,res,next){
+// 	console.log(Date.now());
+// 	next();
+// });
 
 //Index route
 app.get('/',function(req,res){
@@ -51,6 +51,17 @@ app.get('/about',function(req,res){
 //Add Ideas form route
 app.get('/ideas/add',function(req,res){
 	res.render('ideas/add');
+});
+
+//Get all Ideas form collection
+app.get('/ideas',function(req,res){
+	Idea.find({})
+		.sort({date:'desc'})
+		.then((ideas)=>{
+			res.render('ideas/index',{
+				ideas:ideas
+			});
+		});
 });
 
 //Process Ideas Form
@@ -73,7 +84,16 @@ app.post('/ideas',(req,res)=>{
 			details:req.body.details,
 		})
 	}else{
-	res.send('passed');
+		const data={
+			title:req.body.title,
+			details:req.body.details
+		}
+		new Idea(data)
+		.save()
+		.then(idea=>{
+			console.log(idea)
+			res.redirect('ideas');
+		});
 	}
 });
 
