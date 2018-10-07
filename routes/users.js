@@ -8,9 +8,6 @@ const bcrypt = require('bcryptjs');
 
 //Load the user model
 require('../models/User');
-console.log('=====================User=========================');
-console.log(require('../models/User'));
-console.log('=====================User=========================');
 
 const User = mongoose.model('users');
 
@@ -103,5 +100,11 @@ router.post('/register',(req,res)=>{
 	}
 });
 
+
+router.get('/logout',(req,res)=>{
+	req.logout();
+	req.flash('success_msg','Your are logout');
+	res.redirect('/users/login');
+});
 
 module.exports = router;

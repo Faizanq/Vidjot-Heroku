@@ -1,27 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
+const {ensureAuthenticated} = require('../helpers/auth');
 
 //Load Idea model
 require('../models/Idea');
-
-console.log('=====================Idea=========================');
-console.log(require('../models/Idea'));
-console.log('=====================Idea=========================');
 
 //Now let make instance
 const Idea = mongoose.model('ideas');
 
 
 //Add Ideas form route
-router.get('/add',function(req,res){
+router.get('/add',ensureAuthenticated,function(req,res){
 	res.render('ideas/add');
 });
 
 //Get all Ideas form collection
-router.get('/',function(req,res){
-	Idea.find({})
+router.get('/',ensureAuthenticated,function(req,res){
+	Idea.find({user:req.user.id})
 		.sort({date:'desc'})
 		.then((ideas)=>{
 			res.render('ideas/index',{
@@ -31,21 +27,26 @@ router.get('/',function(req,res){
 });
 
 //Get specific Idea form collection
-router.get('/edit/:id',function(req,res){
+router.get('/edit/:id',ensureAuthenticated,function(req,res){
 
 	Idea.findOne({
 			_id:req.params.id
 		})
 		.then((idea)=>{
-			console.log(idea);
-			res.render('ideas/edit',{
-				idea:idea
-			});
+			if(idea.user != req.user.id){
+				req.flash('error_msg','You are not authorized');
+				res.redirect('/ideas');
+			}else{
+				console.log(idea);
+				res.render('ideas/edit',{
+					idea:idea
+				});
+			}
 		});
 });
 
 //Update idea
-router.put('/:id',function(req,res){
+router.put('/:id',ensureAuthenticated,function(req,res){
 
 	Idea.findOne({
 		_id:req.params.id
@@ -64,7 +65,7 @@ router.put('/:id',function(req,res){
 
 
 //Delete idea
-router.delete('/:id',function(req,res){
+router.delete('/:id',ensureAuthenticated,function(req,res){
 	Idea.remove({
 		_id:req.params.id
 	})
@@ -75,7 +76,7 @@ router.delete('/:id',function(req,res){
 });
 
 //Process Ideas Form
-router.post('/',(req,res)=>{
+router.post('/',ensureAuthenticated,(req,res)=>{
 
 	let errors = [];
 
@@ -96,7 +97,8 @@ router.post('/',(req,res)=>{
 	}else{
 		const data={
 			title:req.body.title,
-			details:req.body.details
+			details:req.body.details,
+			user:req.user.id
 		}
 		new Idea(data)
 		.save()

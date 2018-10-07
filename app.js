@@ -12,13 +12,17 @@ const port = process.env.PORT || 3002;
 //load the our application routes
 const ideasRoutes = require('./routes/ideas');
 const usersRoutes = require('./routes/users');
-
+const passport = require('passport');
 //our engine layout
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 //Map global promise ;so avoid mongo warning
 mongoose.Promise = global.Promise;
+
+
+//Passport config
+require('./config/passport')(passport);
 
 //connect mongoose database (local)
 // mongoose.connect('mongodb://localhost/vidjot-dev').then(()=> console.log('MongoDB Connceted'))
@@ -54,6 +58,10 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+//Place our passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Flash messages middleware
 app.use(flash());
 
@@ -62,6 +70,7 @@ app.use(function(req,res,next){
 	res.locals.success_msg = req.flash('success_msg');
 	res.locals.error_msg = req.flash('error_msg');
 	res.locals.error = req.flash('error');
+	res.locals.user = req.user || null;
 	next();
 });
 
