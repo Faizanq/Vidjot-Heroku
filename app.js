@@ -28,8 +28,10 @@ require('./config/passport')(passport);
 // mongoose.connect('mongodb://localhost/vidjot-dev').then(()=> console.log('MongoDB Connceted'))
 //   .catch(err=>console.log(err));
 
+//DB Selection
+const db = 	require('./config/database');
 //connect mongoose database (live)
-mongoose.connect('mongodb://FaizanQureshi:v15ce4q1@ds163182.mlab.com:63182/vidjot-dev').then(()=> console.log('MongoDB Connceted'))
+mongoose.connect(db.mongoURI).then(()=> console.log('MongoDB Connceted'))
   .catch(err=>console.log(err));
 
 // parse application/x-www-form-urlencoded
