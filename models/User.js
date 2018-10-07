@@ -4,7 +4,7 @@ const Schema   = mongoose.Schema;
 
 //Create a model Schema
 
-const UsersSchema = new Schema({
+const UserSchema = new Schema({
 
 		name:{
 			type:String,
@@ -24,4 +24,4 @@ const UsersSchema = new Schema({
 		}
 });
 
-mongoose.model('Users',UsersSchema);
+mongoose.model('users',UserSchema);

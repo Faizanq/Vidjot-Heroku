@@ -3,8 +3,13 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 
-//Load models
+//Load Idea model
 require('../models/Idea');
+
+console.log('=====================Idea=========================');
+console.log(require('../models/Idea'));
+console.log('=====================Idea=========================');
+
 //Now let make instance
 const Idea = mongoose.model('ideas');
 
